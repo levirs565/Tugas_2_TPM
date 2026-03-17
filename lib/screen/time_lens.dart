@@ -1,51 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:proyek_mobile/model/neptu.dart';
-import 'package:proyek_mobile/model/pyramid_notifier.dart';
-import 'package:proyek_mobile/model/weton.dart';
+import 'package:proyek_mobile/model/time_lens_notifier.dart';
 
-class WetonScreen extends StatefulWidget {
-  const WetonScreen({super.key});
+class TimeLensScreen extends StatefulWidget {
+  const TimeLensScreen({super.key});
 
   @override
-  State<WetonScreen> createState() => _WetonScreenState();
+  State<TimeLensScreen> createState() => _TimeLensScreenState();
 }
 
-class _WetonScreenState extends State<WetonScreen> {
-  DateTime _dateTime = DateTime.now();
-  final _dateFormat = DateFormat("EEEE, dd MMMM yyyy");
-  ConversionResult? _conversionResult;
+class _TimeLensScreenState extends State<TimeLensScreen> {
+  final TimeLensNotifier _notifier = TimeLensNotifier();
+  final DateFormat _dateFormat = DateFormat("EEEE, dd MMMM yyyy");
 
   @override
   void initState() {
-    _processDate();
     super.initState();
+    _notifier.addListener(() {
+      setState(() {});
+    });
   }
 
-  void _changeDate() async {
+  @override
+  void dispose() {
+    _notifier.dispose();
+    super.dispose();
+  }
+
+  Future<void> _changeDate() async {
     final selected = await showDatePicker(
       context: context,
       firstDate: DateTime(1900),
       lastDate: DateTime(2099),
-      currentDate: _dateTime,
+      currentDate: _notifier.dateTime,
+      initialDate: _notifier.dateTime,
     );
     if (selected != null) {
-      setState(() {
-        _dateTime = selected;
-        _processDate();
-      });
+      _notifier.updateDate(selected);
     }
-  }
-
-  void _processDate() {
-    _conversionResult = getWeton(_dateTime);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Weton')),
+      appBar: AppBar(title: const Text('Time Lens')),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -74,17 +73,18 @@ class _WetonScreenState extends State<WetonScreen> {
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
                   children: [
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: Text(
-                            _dateFormat.format(_dateTime),
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
+                        Text(
+                          _dateFormat.format(_notifier.dateTime),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                         ),
                         ElevatedButton(
                           onPressed: _changeDate,
-                          child: Text("Change Date"),
+                          child: const Text('Change Date'),
                         ),
                       ],
                     ),
@@ -100,7 +100,7 @@ class _WetonScreenState extends State<WetonScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Dino: $_dino ($_neptuSaptawara)',
+                            'Dino: ${_notifier.dino} (${_notifier.neptuSaptawara})',
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -108,7 +108,7 @@ class _WetonScreenState extends State<WetonScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Pasaran: $pasaran ($_neptuPancawara)',
+                            'Pasaran: ${_notifier.pasaran} (${_notifier.neptuPancawara})',
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -116,7 +116,49 @@ class _WetonScreenState extends State<WetonScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Neptu: ${_neptuPancawara + _neptuSaptawara}',
+                            'Neptu: ${_notifier.neptuTotal}',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5FA),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Umur: ${_notifier.age.years} tahun, ${_notifier.age.months} bulan, ${_notifier.age.days} hari',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5FA),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hijri Date : ${_notifier.hijriDate}',
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -135,12 +177,4 @@ class _WetonScreenState extends State<WetonScreen> {
       ),
     );
   }
-
-  int get _neptuPancawara => getNeptuPancawara(_conversionResult?.wetonNumber.pancawara ?? 0);
-
-  String get pasaran => _conversionResult?.wetonName.pancawara ?? "";
-
-  String get _dino => getDinoSaptawara(_conversionResult?.wetonNumber.saptawara ?? 0);
-
-  int get _neptuSaptawara => getNeptuSaptawara(_conversionResult?.wetonNumber.saptawara ?? 0);
 }

@@ -1,14 +1,20 @@
 // based on https://github.com/thisham/javanese-weton/blob/master/src/index.ts
 
+import 'package:proyek_mobile/model/age.dart';
+
 class ConversionResult {
   final String date;
   final WetonName wetonName;
   final WetonNumber wetonNumber;
+  final Age age;
+  final DateTime hijriDate;
 
   ConversionResult({
     required this.date,
     required this.wetonName,
     required this.wetonNumber,
+    required this.age,
+    required this.hijriDate,
   });
 }
 
@@ -24,6 +30,13 @@ class WetonNumber {
   final int saptawara;
 
   WetonNumber({required this.pancawara, required this.saptawara});
+}
+
+class Weton {
+  final WetonName name;
+  final WetonNumber number;
+
+  Weton({required this.name, required this.number});
 }
 
 const Map<int, String> saptawaraList = {
@@ -98,7 +111,7 @@ int _getSaptawara(int gregorianDate) {
   return gregorianDate % 7;
 }
 
-ConversionResult getWeton(DateTime annoDominiDate) {
+Weton getWeton(DateTime annoDominiDate) {
   bool aPrimitive = annoDominiDate.year <= 1900;
   bool aHumanoid = annoDominiDate.year >= 2100;
 
@@ -116,13 +129,24 @@ ConversionResult getWeton(DateTime annoDominiDate) {
   int pancawara = _getPancawara(gregorianDays);
   int saptawara = _getSaptawara(gregorianDays);
 
-  return ConversionResult(
-    date: annoDominiDate.toString(),
-    wetonName: WetonName(
+
+  // return ConversionResult(
+  //   date: annoDominiDate.toString(),
+  //   wetonName: WetonName(
+  //     pancawara: pancawaraList[pancawara]!,
+  //     saptawara: saptawaraList[saptawara]!,
+  //   ),
+  //   wetonNumber: WetonNumber(
+  //     pancawara: pancawara,
+  //     saptawara: saptawara,
+  //   ),
+  // );
+  return Weton(
+    name: WetonName(
       pancawara: pancawaraList[pancawara]!,
       saptawara: saptawaraList[saptawara]!,
     ),
-    wetonNumber: WetonNumber(
+    number: WetonNumber(
       pancawara: pancawara,
       saptawara: saptawara,
     ),

@@ -8,7 +8,7 @@ import 'package:proyek_mobile/screen/login_screen.dart';
 import 'package:proyek_mobile/screen/number_screen.dart';
 import 'package:proyek_mobile/screen/pyramid_screen.dart';
 import 'package:proyek_mobile/screen/stopwatch_screen.dart';
-import 'package:proyek_mobile/screen/weton_screen.dart';
+import 'package:proyek_mobile/screen/time_lens.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings routeSetting) {
@@ -32,7 +32,7 @@ class AppRouter {
       case AppRoutes.about:
         return MaterialPageRoute(builder: (_) => AboutScreen());
       case AppRoutes.jawa:
-        return MaterialPageRoute(builder: (_) => WetonScreen());
+        return MaterialPageRoute(builder: (_) => const TimeLensScreen());
       default:
         return MaterialPageRoute(builder: (_) => NumberScreen());
     }

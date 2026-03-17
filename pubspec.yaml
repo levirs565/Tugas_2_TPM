@@ -38,6 +38,7 @@ dependencies:
   google_fonts: ^6.2.1
   hugeicons: ^1.1.5
   intl: ^0.20.2
+  hijri_date: ^1.1.0
 
 dev_dependencies:
   flutter_test:
