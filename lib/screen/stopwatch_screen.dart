@@ -44,7 +44,8 @@ class _StopwatchScreenState extends State<StopwatchScreen>
   }
 
   String _formatWaktu() {
-    var waktu = _stopwatch.elapsed.inMilliseconds;
+    var waktu =
+        _stopwatch.elapsed.inMilliseconds + Duration(days: 100).inMilliseconds;
     String milidetik = (waktu % 1000)
         .toString()
         .padLeft(3, "0")
@@ -82,7 +83,7 @@ class _StopwatchScreenState extends State<StopwatchScreen>
                   fontSize: 60,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF6C63FF),
-                  fontFamily: "monospace"
+                  fontFamily: "monospace",
                 ),
               ),
             ),
