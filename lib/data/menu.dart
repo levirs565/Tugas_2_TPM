@@ -54,13 +54,13 @@ final List<Menu> menus = [
         'Visualize the frequency and distribution of characters within any given text.',
   ),
   Menu(
-    name: 'Javanese Weton',
+    name: 'Time Lens',
     icon: HugeIcons.strokeRoundedCalendar01,
     onTap: (BuildContext context) {
       Navigator.pushNamed(context, AppRoutes.jawa);
     },
     description:
-        'Determine the Javanese weton (day and pasaran) based on a Gregorian date.',
+        'Explore time across different calendars and cultures with an interactive calendar viewer.',
   ),
   Menu(
     name: 'About',
